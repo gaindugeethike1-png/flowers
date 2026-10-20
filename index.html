@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For diiinuu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9f3ec;--bg2:#cfe8d6;--ink:#1c3328;--muted:#4f6d5c;--stem:#3f8f5c;--dim:#8fb09b;--panel:rgba(255,255,255,.68);--ribbon:#e0386f;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0f2219;--bg2:#1c3d2d;--ink:#f6efe3;--muted:#a9c4b3;--stem:#6fcf97;--dim:#527a66;--panel:rgba(255,255,255,.08);--ribbon:#ff6f9c}
+}
+:root[data-theme="dark"]{--bg:#0f2219;--bg2:#1c3d2d;--ink:#f6efe3;--muted:#a9c4b3;--stem:#6fcf97;--dim:#527a66;--panel:rgba(255,255,255,.08);--ribbon:#ff6f9c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background-color:var(--bg);background-image:radial-gradient(ellipse at 50% 0%,var(--bg2),var(--bg) 70%);background-attachment:fixed;color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:44px 20px 72px}
+h1{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(2.3rem,8.5vw,3.6rem);line-height:1.08;margin:0 0 14px}
+.lead{color:var(--muted);font-size:1.05rem;margin:0;max-width:36ch}
+svg{display:block;width:100%;height:auto;margin:10px 0 0;overflow:visible}
+.stem{fill:none;stroke:var(--dim);stroke-width:2;stroke-linecap:round;opacity:.6;transition:stroke .7s,opacity .7s,stroke-width .7s}
+.stem.on{stroke:var(--stem);opacity:1;stroke-width:3}
+.ribbon{fill:var(--ribbon)}
+.f{cursor:pointer;outline:none}
+.f .hit{fill:transparent}
+.f:focus-visible .hit{stroke:var(--ink);stroke-width:2;stroke-dasharray:3 3}
+.bud{transition:opacity .3s}
+.f:not(.lit) .bud{transform-box:fill-box;transform-origin:center;animation:pulse 2.8s ease-in-out infinite}
+.f:nth-child(3n) .bud{animation-delay:.9s}
+.f:nth-child(3n+1) .bud{animation-delay:1.7s}
+.f.lit .bud{opacity:0}
+.bloom{transform-box:fill-box;transform-origin:center;transform:scale(0) rotate(-70deg);transition:transform 1s cubic-bezier(.2,1.35,.4,1)}
+.f.lit .bloom{transform:scale(1) rotate(0)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.panel{background:var(--panel);border-radius:18px;padding:22px 24px;min-height:7.2em;display:flex;align-items:center;margin-top:10px}
+.reason{font-family:"Young Serif",Georgia,serif;font-size:clamp(1.25rem,4.6vw,1.65rem);line-height:1.3;margin:0}
+.count{color:var(--muted);font-size:.9rem;margin:12px 4px 0}
+.letter{margin-top:48px;display:none}
+.letter.show{display:block;animation:rise 1.2s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.letter p{font-family:"Young Serif",Georgia,serif;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.4;margin:0 0 18px}
+.letter .sig{color:var(--muted)}
+button.again{font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:999px;padding:9px 20px;cursor:pointer;margin-top:8px}
+button.again:hover{background:var(--panel)}
+button.again:focus-visible{outline:2px solid var(--stem);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.f:not(.lit) .bud,.letter.show{animation:none}.bloom,.stem{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>diiinuu, these are for you.</h1>
+  <p class="lead">Fourteen flowers, fourteen reasons. Tap each bud to make it bloom.</p>
+
+  <svg id="bq" viewBox="0 0 400 450" role="group" aria-label="A bouquet of fourteen flower buds"></svg>
+
+  <div class="panel" aria-live="polite">
+    <p class="reason" id="reason">Tap a bud.</p>
+  </div>
+  <p class="count" id="count">0 of 14 flowers bloomed</p>
+
+  <section class="letter" id="letter">
+    <p>Real flowers fade. What I feel for you doesn’t.</p>
+    <p>Thank you for being the best part of my days, diiinuu. I love you more than this page can show.</p>
+    <p class="sig">Always yours 😘💋</p>
+    <button class="again" id="again" type="button">Plant them again</button>
+  </section>
+</main>
+
+<script>
+(function(){
+  var reasons=[
+    "The way you laugh before you finish the joke.",
+    "You make ordinary days feel like spring.",
+    "You’re kind to people who can’t do anything for you.",
+    "Home stopped being a place and started being you.",
+    "You notice the small things I forget I said.",
+    "You’re the first person I want to tell everything.",
+    "You make me braver than I am.",
+    "Silence with you is never awkward.",
+    "You believe in me on the days I don’t.",
+    "Your hand fits mine like it was measured.",
+    "You turn boring errands into my favorite memories.",
+    "I like who I am around you.",
+    "You’re beautiful, diiinuu, and somehow that’s the least of it.",
+    "I’d choose you again tomorrow, and the day after that."
+  ];
+  var colors=["#ff5c8a","#ffb347","#c77dff","#ff7b6b","#ffd166","#7aa2ff","#ff8fb1"];
+  var N=reasons.length, NS="http://www.w3.org/2000/svg", BASE=[200,432];
+  var svg=document.getElementById("bq"), reasonEl=document.getElementById("reason"),
+      countEl=document.getElementById("count"), letter=document.getElementById("letter");
+  var lit=new Array(N).fill(false), pos=[], stems=[], fl=[];
+
+  function el(tag,attrs,parent){
+    var n=document.createElementNS(NS,tag);
+    for(var k in attrs) n.setAttribute(k,attrs[k]);
+    (parent||svg).appendChild(n); return n;
+  }
+  function ring(count,rx,ry,cy,from,to){
+    for(var i=0;i<count;i++){
+      var th=(from+(to-from)*i/(count-1))*Math.PI/180;
+      pos.push([200+rx*Math.cos(th), cy-ry*Math.sin(th)]);
+    }
+  }
+  ring(8,165,140,235,12,168);
+  ring(5,95,80,215,25,155);
+  pos.push([200,210]);
+
+  pos.forEach(function(p){
+    var cx=200+(p[0]-200)*.35, cy=340-(432-p[1])*.1;
+    stems.push(el("path",{"class":"stem",d:"M"+BASE[0]+" "+BASE[1]+" Q"+cx.toFixed(1)+" "+cy.toFixed(1)+" "+p[0].toFixed(1)+" "+p[1].toFixed(1)}));
+  });
+  el("ellipse",{"class":"ribbon",cx:178,cy:416,rx:20,ry:9,transform:"rotate(-18 178 416)"});
+  el("ellipse",{"class":"ribbon",cx:222,cy:416,rx:20,ry:9,transform:"rotate(18 222 416)"});
+  el("circle",{"class":"ribbon",cx:200,cy:420,r:8});
+
+  pos.forEach(function(p,i){
+    var c=colors[i%colors.length];
+    var g=el("g",{"class":"f",tabindex:"0",role:"button","aria-label":"Flower bud "+(i+1)+" of "+N,transform:"translate("+p[0].toFixed(1)+" "+p[1].toFixed(1)+")"});
+    el("circle",{"class":"hit",r:26},g);
+    el("circle",{"class":"bud",r:7,fill:c,opacity:".75"},g);
+    var b=el("g",{"class":"bloom"},g);
+    for(var k=0;k<7;k++) el("ellipse",{cx:0,cy:-11,rx:6.5,ry:12,fill:c,transform:"rotate("+(k*360/7)+")"},b);
+    el("circle",{r:5.5,fill:"#fff3c4"},b);
+    el("circle",{r:2.4,fill:"#e8a317"},b);
+    g.addEventListener("click",function(){bloom(i)});
+    g.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();bloom(i)}});
+    fl.push(g);
+  });
+
+  function update(){
+    var n=0;
+    lit.forEach(function(v,i){
+      if(v) n++;
+      fl[i].classList.toggle("lit",v);
+      stems[i].classList.toggle("on",v);
+    });
+    countEl.textContent=n+" of "+N+" flowers bloomed";
+    return n;
+  }
+  function bloom(i){
+    lit[i]=true;
+    reasonEl.textContent=reasons[i];
+    if(update()===N){
+      letter.classList.add("show");
+      var calm=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setTimeout(function(){letter.scrollIntoView({behavior:calm?"auto":"smooth",block:"center"})},900);
+    }
+  }
+  document.getElementById("again").addEventListener("click",function(){
+    lit.fill(false); letter.classList.remove("show");
+    reasonEl.textContent="Tap a bud."; update();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+})();
+</script>
+</body>
+</html>
